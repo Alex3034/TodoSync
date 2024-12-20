@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "730141070798",
+    "project_id": "todosync-25c4a",
+    "storage_bucket": "todosync-25c4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730141070798:android:c2415da016dc74d678879f",
+        "android_client_info": {
+          "package_name": "com.todosync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3tqW-jk--XszI_OUU9GuVUAGI6b7rCRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
