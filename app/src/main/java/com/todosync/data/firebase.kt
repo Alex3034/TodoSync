@@ -31,4 +31,25 @@ class FirebaseInstance() {
                 Log.e("Firebase", "Error al añadir la tarea", e)
             }
     }
+
+    @Composable
+    fun observeTasks(): List<Task> {
+        var tasks by remember { mutableStateOf<List<Task>>(emptyList()) }
+
+        LaunchedEffect(Unit) {
+            tasksRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val taskList = snapshot.children.mapNotNull { it.getValue(Task::class.java) }
+                    tasks = taskList
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Error fetching tasks", error.toException())
+                }
+            })
+        }
+
+        return tasks
+    }
+
 }
