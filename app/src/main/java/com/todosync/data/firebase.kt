@@ -52,4 +52,13 @@ class FirebaseInstance() {
         return tasks
     }
 
+    fun updateTask(task: Task) {
+        tasksRef.child(task.id).setValue(task)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Tarea actualizada exitosamente")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error al actualizar la tarea", e)
+            }
+    }
 }
