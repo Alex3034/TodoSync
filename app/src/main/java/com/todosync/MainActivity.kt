@@ -14,17 +14,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.todosync.data.FirebaseInstance
 import com.todosync.ui.navigation.Navigation
 import com.todosync.ui.theme.TodoSyncTheme
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val firebaseInstance = FirebaseInstance()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Navigation(firebaseInstance)
+            Navigation()
         }
     }
 }

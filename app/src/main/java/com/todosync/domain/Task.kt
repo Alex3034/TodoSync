@@ -1,4 +1,4 @@
-package com.todosync.data
+package com.todosync.domain
 
 data class Task (
     val id: String = "",
