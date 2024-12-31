@@ -1,4 +1,4 @@
-package com.todosync
+package com.todosync.ui.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
