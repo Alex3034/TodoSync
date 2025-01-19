@@ -16,6 +16,10 @@ class TaskRepositoryImpl @Inject constructor(
         firebaseInstance.addTask(task)
     }
 
+    override suspend fun deleteTask(task: Task) {
+        firebaseInstance.deleteTask(task)
+    }
+
     override suspend fun updateTask(task: Task) {
         firebaseInstance.updateTask(task)
     }

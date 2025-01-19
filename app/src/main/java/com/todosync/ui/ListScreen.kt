@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +59,9 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
                             task = task,
                             onTaskCheckedChange = { updatedTask ->
                                 vm.updateTask(updatedTask)
+                            },
+                            onDeleteClick = { deleteTask ->
+                                vm.deleteTask(deleteTask)
                             }
                         )
                     }
@@ -63,13 +70,15 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    onClick = { vm.addTask(
-                        Task(
-                            id = UUID.randomUUID().toString(),
-                            title = "Nueva Tarea",
-                            completed = false
+                    onClick = {
+                        vm.addTask(
+                            Task(
+                                id = UUID.randomUUID().toString(),
+                                title = "Nueva Tarea",
+                                completed = false
+                            )
                         )
-                    ) }
+                    }
                 ) {
                     Text(text = "Agregar Tarea")
                 }
@@ -79,7 +88,11 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun TaskItem(task: Task, onTaskCheckedChange: (Task) -> Unit) {
+fun TaskItem(
+    task: Task,
+    onTaskCheckedChange: (Task) -> Unit,
+    onDeleteClick: (Task) -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -88,6 +101,9 @@ fun TaskItem(task: Task, onTaskCheckedChange: (Task) -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = task.title, style = MaterialTheme.typography.bodyLarge)
+            IconButton(onClick = { onDeleteClick(task) }) {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Task")
+            }
             Checkbox(
                 checked = task.completed,
                 onCheckedChange = { isChecked ->

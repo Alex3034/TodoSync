@@ -38,6 +38,13 @@ class ListScreenViewModel @Inject constructor(
         }
     }
 
+    fun deleteTask(task: Task) {
+        viewModelScope.launch {
+            runCatching { taskRepository.deleteTask(task) }
+                .onFailure { Log.e("ListScreenViewModel", "Error deleting task", it) }
+        }
+    }
+
     fun updateTask(task: Task) {
         viewModelScope.launch {
             runCatching { taskRepository.updateTask(task) }

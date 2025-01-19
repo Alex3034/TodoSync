@@ -44,4 +44,8 @@ class FirebaseInstance(context: Context) {
             .addOnSuccessListener { continuation.resume(Unit) }
             .addOnFailureListener { continuation.resumeWithException(it) }
     }
+
+    fun deleteTask(task: Task) {
+        tasksRef.child(task.id).removeValue()
+    }
 }
