@@ -2,7 +2,6 @@ package com.todosync.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,20 +9,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.todosync.domain.Task
@@ -40,6 +36,15 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
 
     Screen {
         val state by vm.state.collectAsState()
+        var isEditingTask by remember { mutableStateOf(false) }
+        var newTaskTitle by remember { mutableStateOf("") }
+        val focusRequester = remember { FocusRequester() }
+
+        LaunchedEffect(isEditingTask) {
+            if (isEditingTask) {
+                focusRequester.requestFocus()
+            }
+        }
 
         StateScaffold(
             state = state,
@@ -62,54 +67,45 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
                             },
                             onDeleteClick = { deleteTask ->
                                 vm.deleteTask(deleteTask)
-                            }
+                            },
+                            focusRequester = focusRequester,
                         )
+                    }
+                    if (isEditingTask) {
+                        item {
+                            TaskItem(
+                                task = Task(id = "", title = newTaskTitle),
+                                onTaskCheckedChange = {},
+                                onDeleteClick = {},
+                                isEditing = true,
+                                onEditChange = { newTaskTitle = it },
+                                onEditComplete = { title ->
+                                    if (title.isNotBlank()) {
+                                        vm.addTask(
+                                            Task(
+                                                id = UUID.randomUUID().toString(),
+                                                title = title,
+                                            )
+                                        )
+                                        newTaskTitle = ""
+                                    }
+                                    isEditingTask = false
+                                },
+                                focusRequester = focusRequester
+                            )
+                        }
                     }
                 }
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    onClick = {
-                        vm.addTask(
-                            Task(
-                                id = UUID.randomUUID().toString(),
-                                title = "Nueva Tarea",
-                                completed = false
-                            )
-                        )
-                    }
+                    onClick = { isEditingTask = !isEditingTask }
                 ) {
                     Text(text = "Agregar Tarea")
                 }
-            }
-        }
-    }
-}
 
-@Composable
-fun TaskItem(
-    task: Task,
-    onTaskCheckedChange: (Task) -> Unit,
-    onDeleteClick: (Task) -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = task.title, style = MaterialTheme.typography.bodyLarge)
-            IconButton(onClick = { onDeleteClick(task) }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Task")
             }
-            Checkbox(
-                checked = task.completed,
-                onCheckedChange = { isChecked ->
-                    onTaskCheckedChange(task.copy(completed = isChecked))
-                }
-            )
         }
     }
 }
