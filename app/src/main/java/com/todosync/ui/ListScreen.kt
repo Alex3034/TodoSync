@@ -10,21 +10,28 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.todosync.domain.Task
+import com.todosync.ui.common.DrawerMenu
 import com.todosync.ui.common.Screen
 import com.todosync.ui.common.StateScaffold
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -36,6 +43,11 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
 
     Screen {
         val state by vm.state.collectAsState()
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+        var selectedList by remember { mutableStateOf("All Tasks") }
+        
         var isEditingTask by remember { mutableStateOf(false) }
         var newTaskTitle by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
@@ -48,7 +60,20 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
 
         StateScaffold(
             state = state,
-            contentWindowInsets = WindowInsets.safeDrawing
+            drawerState = drawerState,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            contentWindowInsets = WindowInsets.safeDrawing,
+            drawerContent = {
+                DrawerMenu(
+                    selectedList = selectedList,
+                    onListSelected = { list ->
+                        selectedList = list
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
+            }
         ) { innerPadding, tasks ->
             Column(
                 modifier = Modifier
