@@ -1,5 +1,6 @@
 package com.todosync.data
 
+import com.todosync.data.firebase.FirebaseInstance
 import com.todosync.domain.Task
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

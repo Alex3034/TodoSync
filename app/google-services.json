@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "730141070798",
+    "firebase_url": "https://todosync-25c4a-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "todosync-25c4a",
     "storage_bucket": "todosync-25c4a.firebasestorage.app"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.todosync"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "730141070798-1v8ldpk005bubkulrv7ck4b7chgfhu4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC3tqW-jk--XszI_OUU9GuVUAGI6b7rCRc"
@@ -20,7 +26,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730141070798-1v8ldpk005bubkulrv7ck4b7chgfhu4r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

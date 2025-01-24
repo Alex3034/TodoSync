@@ -1,6 +1,5 @@
-package com.todosync.data
+package com.todosync.data.firebase
 
-import android.content.Context
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -13,7 +12,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseInstance(context: Context) {
+class FirebaseInstance() {
 
     private val database = FirebaseDatabase.getInstance("https://todosync-25c4a-default-rtdb.europe-west1.firebasedatabase.app/")
     private val tasksRef = database.getReference("tasks")
