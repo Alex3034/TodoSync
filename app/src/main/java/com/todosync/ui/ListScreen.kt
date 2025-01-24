@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,12 +26,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.todosync.domain.Task
 import com.todosync.ui.common.DrawerMenu
-import com.todosync.ui.common.MyFloatingActionButton
 import com.todosync.ui.common.MyTopAppBar
 import com.todosync.ui.common.Screen
 import com.todosync.ui.common.StateScaffold
@@ -46,11 +51,11 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val listState = rememberListState()
         val scope = rememberCoroutineScope()
-        var selectedList by remember { mutableStateOf("All Tasks") }
+        val focusRequester = remember { FocusRequester() }
 
+        var selectedList by remember { mutableStateOf("1" to "All Tasks") }
         var isEditingTask by remember { mutableStateOf(false) }
         var newTaskTitle by remember { mutableStateOf("") }
-        val focusRequester = remember { FocusRequester() }
 
         LaunchedEffect(isEditingTask) {
             if (isEditingTask) {
@@ -62,18 +67,27 @@ fun ListScreen(vm: ListScreenViewModel = hiltViewModel()) {
             state = state,
             drawerState = drawerState,
             topBar = {
-                MyTopAppBar(listState,selectedList)
+                MyTopAppBar(listState)
             },
             floatingActionButton = {
-                MyFloatingActionButton(isEditingTask)
+                FloatingActionButton(
+                    shape = MaterialTheme.shapes.extraLarge,
+                    containerColor = Color.Green,
+                    onClick = { isEditingTask = !isEditingTask }) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        tint = MaterialTheme.colorScheme.surface,
+                        contentDescription = "add task"
+                    )
+                }
             },
             modifier = Modifier.nestedScroll(listState.scrollBehavior.nestedScrollConnection),
             contentWindowInsets = WindowInsets.safeDrawing,
             drawerContent = {
                 DrawerMenu(
                     selectedList = selectedList,
-                    onListSelected = { list ->
-                        selectedList = list
+                    onListSelected = { id, name ->
+                        selectedList = id to name
                         scope.launch {
                             drawerState.close()
                         }
